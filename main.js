@@ -1,73 +1,108 @@
-/*******************
- * OUR HELPER CODE *
-*******************/
-
-/*
- * Here we add the squares to the canvas dynamically.
- * You can mostly leave this section alone!
- * But if you want to change how wide the canvas is,
- * there are just two steps:
- * 
- * 1. Change the `gridWidth` value below.
- * 2. Change the `grid-template-rows` and
- * `grid-template-columns` to match.
- *
- * To make the second one happen, the number to change
- * is the first argument to `repeat`, currently set at 10.
- */
-const gridWidth = 10;
+//Grid Shit
+const gridWidth = 50;
 let count = 0;
 while (count <= gridWidth * gridWidth) {
-  const canvas = document.querySelector('.canvas');
-  const div = document.createElement('div');
-  div.className = 'square color-5';
-  canvas.appendChild(div);
-  count++;
+    const canvas = document.querySelector('.canvas');
+    const div = document.createElement('div');
+    div.className = 'square color-5';
+    canvas.appendChild(div);
+    count++;
+}
+//Lots of query selectors
+const colors = document.querySelectorAll('.palette-color');
+const canvas = document.querySelectorAll('.canvas');
+const vanvas = document.querySelector('.canvas')
+const brush = document.querySelector('.current-brush')
+const squares = document.querySelectorAll('.square')
+const dark = document.querySelector('.dark')
+const reset = document.querySelector('.reset')
+const body = document.querySelector('body')
+const h3 = document.querySelector('h3')
+const message = document.querySelector('.message')
+
+//Default clicked status is false.
+let clicked = false;
+
+
+squares.forEach(function (square) {
+    square.addEventListener('click', function () {
+        //Remove class name.
+        square.classList.remove(square.className.split(' ')[1]);
+
+        //Add class name of brush color currently selected.
+        square.classList.add(brush.className.split(' ')[1]);
+    });
+});
+
+
+squares.forEach(function (square) {
+    square.addEventListener('mouseenter', function () {
+
+        //*****
+        //Wasn't sure where to put these two functions. Took me a while.
+        //Figured it out with console logs
+        square.addEventListener('mouseup', function () {
+            clicked = false;
+            console.log('mouseup should be false: ', clicked)
+        })
+
+        square.addEventListener('mousedown', function () {
+            clicked = true;
+            console.log('mousedown should be true: ', clicked)
+        })
+
+        console.log(clicked)
+
+        //Only when clicked can the class name be removed and replaced.
+        if (clicked === true) {
+            square.classList.remove(square.className.split(' ')[1]);
+
+
+            square.classList.add(brush.className.split(' ')[1]);
+        };
+        //If you're not clicking but hovering over the canvas you will not paint.
+        if (clicked === false) { square.classList = square.classList };
+    });
+});
+
+
+
+colors.forEach(function (color) {
+    color.addEventListener('click', function (e) {
+        //Upon click, the color from the brush will be removed and replaced with the color clicked on.
+        brush.classList.remove(brush.className.split(' ')[1]);
+
+        brush.classList.add(e.target.classList[1]);
+    });
+});
+
+console.log(brush.className.split(' ')[1])
+
+//Changes background color and font color.
+dark.addEventListener('click', function () {
+    body.style.backgroundColor = '#565656'
+    h3.style.color = 'white';
+    message.style.color = 'white';
+
+})
+
+//Refreshes broswer.
+reset.addEventListener('click', function () {
+    location.reload();
+})
+
+//Random color generator.
+function getRandomColor() {
+    let letters = '0123456789ABCDEF';
+    let output = '#';
+    for (let i = 0; i < 6; i++) {
+        output += letters[Math.floor(Math.random() * 16)];
+    }
+    console.log(output)
+
+    //Changes box shadow surrounding canvas.
+    vanvas.style.boxShadow = `0 0 0px ${output}`;
+    vanvas.style.boxShadow = `0 0 30px ${output}`;
 }
 
-// You probably should NOT do these in the order below.
-// That is, you probably should NOT do all the queries,
-// THEN all the functions,
-// THEN all the wiring.
-
-// Instead, it'll be easier if you go one action at a time!
-// So, add a query for the palette colors.
-// THEN add an event listener function for what happens when one is clicked.
-// THEN wire those two together, so that when the palette elements are clicked,
-// the function runs.
-//
-// And proceed from there to getting the squares working.
-//
-
-// ALSO.
-// You do not have to follow the sections below. If you're doing your functions inline, it doesn't make a lot of sense to separate the event listener functions from their wiring!
-
-/***********
- * QUERIES *
-***********/
-
-// Add queries for all your squares, palette colors, and brush here.
-// (Note the singular or plural used in that sentence!)
-
-
-
-/****************************
- * EVENT LISTENER FUNCTIONS *
-****************************/
-
-// Now add some functions to handle clicking one particular square
-// and clicking one particular palette color. You can leave them
-// empty at first, though a console.log just to know they're being
-// run as event listeners (after the next step is set up) isn't a
-// bad idea for testing purposes.
-
-
-
-/**************************
- * WIRING IT ALL TOGETHER *
-**************************/
-
-// Now: wiring up our event listeners to our html node elements.
-// You'll need to add the appropriate event listener for each
-// square and for each palette color from the functions you
-// wrote above.
+setInterval(getRandomColor, 3000);
